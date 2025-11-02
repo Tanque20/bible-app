@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit-no" />
+  <title>RESTORED SCRIPTURES BIBLE</title>
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"/>
+  <link rel="stylesheet" href="style.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif&display=swap" rel="stylesheet">
+
+  <!-- Prevent elastic scrolling and side dragging -->
+  <style>
+    html, body {
+      overflow: hidden;
+      position: fixed;
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      padding: 0;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="bible-container">
+    <!-- Copy Verse Toolbar -->
+    <div id="copy-toolbar" class="copy-toolbar hidden" role="region" aria-label="Copy Verse Toolbar">
+      <span id="copy-ref"></span>
+      <button id="copy-btn" aria-label="Copy Selected Verses">
+        <span class="copy-label">📋 Copy</span>
+      </button>
+    </div>
+
+    <!-- Header Toolbar -->
+    <header class="toolbar">
+      <div class="left-tools">
+        <!-- Hamburger opens Menu -->
+        <button id="menu-toggle" aria-label="Open Menu"><i class="fas fa-bars"></i></button>
+
+        <!-- Book / Chapter -->
+        <select id="book-selector" aria-label="Select Book"></select>
+        <select id="chapter-selector" aria-label="Select Chapter"></select>
+
+        <!-- Small icon-only search beside Chapter -->
+        <div class="quick-search">
+          <button id="quick-search-btn" class="icon-only" aria-label="Search">
+            <i class="fas fa-search"></i>
+          </button>
+        </div>
+      </div>
+
+      <div class="right-tools">
+        <button id="search-btn" aria-label="Open Search"><i class="fas fa-search"></i></button>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="main-content">
+      <main class="bible-text">
+        <div class="bible-header">
+          <h1 id="current-book">Preface</h1>
+          <h2 id="current-chapter">Chapter 1</h2>
+        </div>
+
+        <div class="verse-container" id="verse-container"></div>
+
+        <div class="bible-footer">
+          <button id="prev-chapter" aria-label="Previous Chapter">
+            <i class="fas fa-arrow-left"></i> Previous
+          </button>
+          <button id="next-chapter" aria-label="Next Chapter">
+            Next <i class="fas fa-arrow-right"></i>
+          </button>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <!-- Search Modal -->
+  <div class="modal" id="search-modal" aria-hidden="true">
+    <div class="modal-content">
+      <div class="search-header-bar">
+        <span class="search-title">BIBLE SEARCH</span>
+        <button id="close-search" class="search-close-btn" aria-label="Close Search Modal">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <div class="search-input-group">
+          <input type="text" id="search-query" placeholder="Search Words" aria-label="Search Input">
+        </div>
+
+        <div class="radio-group">
+          <label class="radio-option"><input type="radio" name="search-type" value="all" checked> All Words</label>
+          <label class="radio-option"><input type="radio" name="search-type" value="any"> Any Words</label>
+          <label class="radio-option"><input type="radio" name="search-type" value="phrase"> Phrase</label>
+        </div>
+
+        <div class="radio-group">
+          <label class="radio-option"><input type="radio" name="search-scope" value="whole" checked> Bible</label>
+          <label class="radio-option"><input type="radio" name="search-scope" value="ot"> OT</label>
+          <label class="radio-option"><input type="radio" name="search-scope" value="nt"> NT</label>
+          <select id="book-select" class="book-dropdown" aria-label="Search in Specific Book"></select>
+        </div>
+
+        <div class="search-input-group">
+          <button id="execute-search" class="search-button">Search</button>
+        </div>
+
+        <div class="section-header">VERSES FOUND</div>
+        <div class="search-results" id="search-results"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Menu Modal (Hamburger) -->
+  <div id="menu-modal" class="modal" aria-hidden="true">
+    <div class="modal-content">
+      <div class="search-header-bar">
+        <div class="search-title">Menu</div>
+        <button id="close-menu" class="search-close-btn" aria-label="Close">&times;</button>
+      </div>
+
+      <div class="modal-body">
+        <ul class="menu-list">
+          <li><button id="open-doctrine" class="menu-link">Core &amp; Doctrine</button></li>
+
+          <li class="menu-toggle-row">
+            <span>Dark mode</span>
+            <label class="theme-toggle">
+              <input type="checkbox" id="theme-toggle" />
+              <span class="theme-slider"></span>
+            </label>
+          </li>
+
+          <li><button id="open-about" class="menu-link">About</button></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- About Modal -->
+  <div class="modal" id="about-modal" aria-hidden="true">
+    <div class="modal-content">
+      <div class="search-header-bar">
+        <span class="search-title">ABOUT THIS BIBLE</span>
+        <button class="search-close-btn" aria-label="Close About Modal"
+                onclick="document.getElementById('about-modal').classList.remove('open')">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <p><strong>RESTORED SCRIPTURES BIBLE (RSB)</strong> is personally translated, researched, and restored by <strong>TanQue JeRry</strong>.</p>
+        <p>This Bible is grounded on the earliest available manuscript sources including the Dead Sea Scrolls, early Papyri.</p>
+        <p>Dogmas, creeds, and corrupted traditions were removed to return to pure Hebraic monotheism.</p>
+        <p style="margin-top: 10px;"><em>— Created, translated, and restored with dedication by TanQue JeRry (2025)</em></p>
+        <p style="margin-top: 20px; font-size: 13px;">
+          Contact: <a href="mailto:tanquejerry@gmail.com">tanquejerry@gmail.com</a><br>
+          Facebook: <a href="https://facebook.com/rrstoredscriptures" target="_blank">tanque.jerry</a>
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Doctrine Modal -->
+  <div class="modal" id="doctrine-modal" aria-hidden="true">
+    <div class="modal-content">
+      <div class="search-header-bar">
+        <span class="search-title">DOCTRINE & TEACHING</span>
+        <button class="search-close-btn" aria-label="Close Doctrine Modal"
+                onclick="document.getElementById('doctrine-modal').classList.remove('open')">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <!-- Keep your existing doctrine content here -->
+        <p><strong>Textual Authority:</strong> Dead Sea Scrolls and early witnesses; New Testament early papyri and Vaticanus.</p>
+        <p><strong>Foundational Belief:</strong> YHWH alone is Elohim; Yeshua is the begotten human Son.</p>
+        <p><strong>Salvation:</strong> Repentance, immersion, obedience.</p>
+        <p><strong>The Ruach:</strong> YHWH’s power and presence.</p>
+        <p><strong>No Immortal Soul:</strong> Resurrection hope.</p>
+        <p><strong>Kingdom:</strong> Inherit the earth.</p>
+        <p><strong>Sabbath:</strong> Creation covenant.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="app.js" defer></script>
+
+  <!-- Lightweight bindings to ensure correct behavior before app.js is updated -->
+  <script>
+    window.addEventListener('DOMContentLoaded', () => {
+      // Rebind hamburger to open the Menu modal
+      const oldBtn = document.getElementById('menu-toggle');
+      if (oldBtn) {
+        const fresh = oldBtn.cloneNode(true);
+        oldBtn.parentNode.replaceChild(fresh, oldBtn);
+        const menuModal = document.getElementById('menu-modal');
+        const closeMenu = document.getElementById('close-menu');
+        fresh.addEventListener('click', () => menuModal.classList.add('open'));
+        closeMenu?.addEventListener('click', () => menuModal.classList.remove('open'));
+        menuModal.addEventListener('click', (e) => { if (e.target === menuModal) menuModal.classList.remove('open'); });
+
+        // Menu items
+        document.getElementById('open-about')?.addEventListener('click', () => {
+          menuModal.classList.remove('open');
+          document.getElementById('about-modal').classList.add('open');
+        });
+        document.getElementById('open-doctrine')?.addEventListener('click', () => {
+          menuModal.classList.remove('open');
+          document.getElementById('doctrine-modal').classList.add('open');
+        });
+      }
+
+      // Quick search icon opens full search modal
+      const quick = document.getElementById('quick-search-btn');
+      const searchModal = document.getElementById('search-modal');
+      const searchQuery = document.getElementById('search-query');
+      function openSearch() {
+        if (searchQuery) searchQuery.value = '';
+        searchModal.classList.add('open');
+        setTimeout(() => searchQuery?.focus(), 50);
+        if (typeof performSearch === 'function') performSearch();
+      }
+      quick?.addEventListener('click', openSearch);
+    });
+  </script>
+</body>
+</html>
